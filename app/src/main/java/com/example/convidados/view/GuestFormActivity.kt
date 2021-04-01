@@ -6,14 +6,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.convidados.viewModel.GuestFormViewModel
+import com.example.convidados.viewModel.AllGuestFormViewModel
 import com.example.convidados.R
 import com.example.convidados.service.constants.GuestConstants
 import kotlinx.android.synthetic.main.activity_guest_form.*
 
 class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
 
-    private lateinit var mViewModel: GuestFormViewModel
+    private lateinit var mViewModelAll: AllGuestFormViewModel
     private var mGuestId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +21,7 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_guest_form)
 
 
-        mViewModel = ViewModelProvider(this).get(GuestFormViewModel::class.java)
+        mViewModelAll = ViewModelProvider(this).get(AllGuestFormViewModel::class.java)
 
         setListeners()
         observe()
@@ -37,7 +37,7 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
             val name = edit_name.text.toString()
             val presence = radio_presence.isChecked
 
-            mViewModel.save(mGuestId, name, presence)
+            mViewModelAll.save(mGuestId, name, presence)
 
 
         }
@@ -47,12 +47,12 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
         val bundle = intent.extras
         if (bundle != null) {
             mGuestId = bundle.getInt(GuestConstants.GUESTID)
-            mViewModel.load(mGuestId)
+            mViewModelAll.load(mGuestId)
         }
     }
 
     private fun observe() {
-        mViewModel.saveGuest.observe(this, Observer {
+        mViewModelAll.saveGuest.observe(this, Observer {
             if (it) {
                 Toast.makeText(applicationContext, "Sucesso", Toast.LENGTH_SHORT).show()
             } else {
@@ -61,7 +61,7 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
             finish()
         })
 
-        mViewModel.guest.observe(this, Observer {
+        mViewModelAll.guest.observe(this, Observer {
             edit_name.setText(it.name)
             if (it.presence) {
                 radio_presence.isChecked = true
